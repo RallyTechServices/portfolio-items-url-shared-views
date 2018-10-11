@@ -1,4 +1,4 @@
-# Custom Grid with deep export
+# Portfolio Item Grid with deep export
 
 ![](screenshot.png)
 
@@ -16,15 +16,6 @@ When a portfolio item is selected as the root type:
     * **Export Portfolio Items, User Stories and Tasks...** These item types will be exported.
 
     * **Export Portfolio Items and Child Items...** Portfolio items, stories, tasks, defects, and test cases will be exported.  Test cases that are children of defects (that are children of stories) will be exported, as will defects that are children of test cases that are children of stories.  If a defect is a child of a story and is also a child of a test case that is displayed, the defect may not appear where you expect.
-
-
-When user story is selected as the root type:
-
-    * **Export User Stories...** Only stories in the tree will be exported.
-
-    * **Export User Stories and Tasks...** These item types will be exported.
-
-    * **Export User Stories and Child Items...** Stories, tasks, defects, and test cases will be exported.  Test cases that are children of defects (that are children of stories) will be exported, as will defects that are children of test cases that are children of stories.  If a defect is a child of a story and is also a child of a test case that is displayed, the defect may not appear where you expect.
 
 If this app is on a Timebox Scoped page, then the appropriate timebox filter
 will be applied if the Timebox is valid for the queried model.  If the Timebox

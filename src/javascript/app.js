@@ -32,6 +32,8 @@ Ext.define("custom-grid-with-deep-export", {
     integrationHeaders: {
         name: "custom-grid-with-deep-export"
     },
+    
+    piTypesOnly: true,
 
     modelNames: [],
 
