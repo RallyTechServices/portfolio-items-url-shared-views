@@ -7,12 +7,17 @@ Ext.define("custom-grid-with-deep-export", {
         align: 'stretch'
     },
     items: [{
-        id: 'grid-area',
-        xtype: 'container',
-        flex: 1,
-        type: 'vbox',
-        align: 'stretch'
-    }],
+            id: 'control-area',
+            xtype: 'container'
+        },
+        {
+            id: 'grid-area',
+            xtype: 'container',
+            flex: 1,
+            type: 'vbox',
+            align: 'stretch'
+        }
+    ],
     config: {
         defaultSettings: {
             columnNames: ['FormattedID', 'Name', 'ScheduleState'],
@@ -28,6 +33,8 @@ Ext.define("custom-grid-with-deep-export", {
         name: "custom-grid-with-deep-export"
     },
 
+    modelNames: [],
+
     disallowedAddNewTypes: ['user', 'userprofile', 'useriterationcapacity', 'testcaseresult', 'task', 'scmrepository', 'project', 'changeset', 'change', 'builddefinition', 'build', 'program'],
     orderedAllowedPageSizes: [10, 25, 50, 100, 200],
     readOnlyGridTypes: ['build', 'change', 'changeset'],
@@ -39,22 +46,44 @@ Ext.define("custom-grid-with-deep-export", {
         this._buildStore();
     },
     launch: function() {
-        Rally.data.util.PortfolioItemHelper.getPortfolioItemTypes()
-            .then({
-                success: function(portfolioItemTypes) {
-                    this.portfolioItemTypes = _.sortBy(portfolioItemTypes, function(type) {
+        this.piTypePlugin = Ext.create('TS.PortfolioItemTypePlugin', {
+            stateful: true,
+            stateId: this.getModelScopedStateId('pitype'),
+            fieldLabel: 'Portfolio Items',
+            labelWidth: 105,
+            listeners: {
+                scope: this,
+                ready: function(combobox) {
+                    // Pi picker has initial value, save it for 
+                    var selectedPiType = combobox.getRecord();
+
+                    // Get the list of portfolio item types from the pi picker
+                    this.portfolioItemTypes = _.sortBy(combobox.getStore().getRecords(), function(type) {
                         return type.get('Ordinal');
                     });
-                    this._buildStore();
-                },
-                failure: function(msg) {
-                    this._showError(msg);
-                },
-                scope: this
-            });
-        var listenerConfig = {
-            scope: this
-        }
+
+                    // Now that ready (and initial updates have completed), listen for future changes
+                    combobox.on('select', function(combobox, records) {
+                        var newModel = records[0].get('TypePath');
+                        if (newModel != this.modelNames[0]) {
+                            this.modelNames = [newModel];
+                            // Update the grid with the new PI type
+                            this.viewChange();
+                        }
+                    }, this);
+
+                    // Add the picker to the display
+                    var controlArea = this.down('#control-area');
+                    controlArea.add(this.piTypePlugin);
+
+                    // Add the data grid if we have a pi type selected
+                    if (selectedPiType) {
+                        this.modelNames = [selectedPiType.get('TypePath')];
+                        this.viewChange();
+                    }
+                }
+            }
+        });
     },
 
     // Usual monkey business to size gridboards
@@ -68,8 +97,7 @@ Ext.define("custom-grid-with-deep-export", {
     },
 
     _buildStore: function() {
-
-        this.modelNames = [this.getSetting('type')];
+        //this.modelNames = [this.getSetting('type')];
         this.logger.log('_buildStore', this.modelNames);
         var fetch = ['FormattedID', 'Name'];
         var dataContext = this.getContext().getDataContext();

@@ -1,10 +1,36 @@
+Ext.override(Rally.nav.Manager, {
+    // Override to not remove other parameters
+    applyParameters: function(params, triggerNavStateChange, paramsToRemove) {
+        var hash = parent.location.hash;
+        var re = /(\w+)=(\d+)&?/g;
+        var matches;
+        var currentParams = {};
+        while ((matches = re.exec(hash)) !== null) {
+            currentParams[matches[1]] = matches[2]
+        }
+        _.merge(currentParams, params);
+
+        Rally.environment.getMessageBus().publish(Rally.nav.Message.applyParameters, currentParams, triggerNavStateChange, paramsToRemove);
+    }
+});
+
+Ext.override(Rally.ui.gridboard.SharedViewComboBox, {
+    getSharedViewParam: function() {
+        // Must override `window.location` with `parent.location`
+        var hash = parent.location.hash,
+            matches = hash.match(/sharedViewId=(\d+)/);
+
+        return matches && matches[1];
+    }
+})
+
 Ext.override(Rally.ui.gridboard.plugin.GridBoardFieldPicker, {
     gridFieldBlackList: [
         'Actuals',
         'Changesets',
         'Children',
-       // 'Description',
-       // 'Notes',
+        // 'Description',
+        // 'Notes',
         'ObjectID',
         'Predecessors',
         'RevisionHistory',
@@ -21,7 +47,7 @@ Ext.override(Rally.ui.inlinefilter.PropertyFieldComboBox, {
      * @cfg {String[]} whiteListFields
      * field names that should be included from the filter row field combobox
      */
-    defaultWhiteListFields: ['Milestones','Tags']
+    defaultWhiteListFields: ['Milestones', 'Tags']
 });
 
 Ext.override(Rally.ui.grid.TreeGrid, {
@@ -33,15 +59,16 @@ Ext.override(Rally.ui.grid.TreeGrid, {
             // use the in-use column config to preserve its current settings
             var result = newColumn;
             var newColumnName = this._getColumnName(newColumn);
-            var oldColumn = _.find(oldColumns, {dataIndex: newColumnName});
+            var oldColumn = _.find(oldColumns, { dataIndex: newColumnName });
             if (oldColumn) {
                 result = this._getColumnConfigFromColumn(oldColumn);
-            } else if ( this.config && this.config.columnCfgs ) {
+            }
+            else if (this.config && this.config.columnCfgs) {
                 // Otherwise, if the newly selected column appears in the original columnCfgs
                 // use that config. (This allows the column picker to get any renderers or summary
                 // config from the column config)
-                var columnCfg = _.find(this.config.columnCfgs, {dataIndex: newColumnName});
-                if ( columnCfg ) {
+                var columnCfg = _.find(this.config.columnCfgs, { dataIndex: newColumnName });
+                if (columnCfg) {
                     result = columnCfg;
                 }
             }
@@ -49,7 +76,7 @@ Ext.override(Rally.ui.grid.TreeGrid, {
             return result;
         }, this);
     },
-    
+
     // Override needed to allow summaryType to be included when a column is restored
     // from state.
     _applyStatefulColumns: function(columns) {
