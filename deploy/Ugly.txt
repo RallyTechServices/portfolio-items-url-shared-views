@@ -3,11 +3,11 @@
 <head>
     <title>portfolio-item-url-shared-views-1.0.0</title>
     <!--  (c) 2017 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Fri Oct 12 2018 23:14:19 GMT+0000 (UTC) -->
+    <!--  Build Date: Fri Oct 12 2018 23:20:18 GMT+0000 (UTC) -->
 
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Fri Oct 12 2018 23:14:19 GMT+0000 (UTC)";
-        var CHECKSUM = 45154456763;
+        var APP_BUILD_DATE = "Fri Oct 12 2018 23:20:18 GMT+0000 (UTC)";
+        var CHECKSUM = 45154455175;
     </script>
 
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
