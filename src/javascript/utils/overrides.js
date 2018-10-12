@@ -1,12 +1,17 @@
 Ext.override(Rally.nav.Manager, {
-    // Override to not remove other parameters
+    // Override to not automatically remove other parameters
     applyParameters: function(params, triggerNavStateChange, paramsToRemove) {
         var hash = parent.location.hash;
         var re = /(\w+)=(\d+)&?/g;
         var matches;
         var currentParams = {};
         while ((matches = re.exec(hash)) !== null) {
-            currentParams[matches[1]] = matches[2]
+            var name = matches[1];
+            var value = matches[2];
+            // Add any params currently in the URL, unless they are in the remove list
+            if (!paramsToRemove || !Ext.Array.contains(paramsToRemove, name)) {
+                currentParams[name] = value;
+            }
         }
         _.merge(currentParams, params);
 

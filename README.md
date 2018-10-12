@@ -37,6 +37,35 @@ constrained to a specific subset of the Project Hierarchy tree.
 
 ## Development Notes
 
+## Test Plan
+* PASS - PI type restored from URL
+* PASS - Set PI type Epic on page A, open URL on page B, change PI type Feature on page A, reload page B to still see Epic
+* PASS - Set PI type Epic on page A, open URL on page B, change PI type Feature on page B, reload page A to still see Epic
+* PASS - Saved view restored from URL
+* PASS - Set view 'one' on page A, open URL on page B, change view 'two' on page A, reload page B to still see view 'one'
+* PASS - Set view 'one' on page A, open URL on page B, change view 'two' on page B, reload page A to still see view 'one'
+* PASS - columns restored from URL
+* PASS - filters restored from URL
+* PASS - column sort order restored from URL
+* PASS - changes on page A don't affect page B loading URL
+* PARTIAL - load URL, change PI type, filters and columns, Load URL restores values
+   * sort and columns restored from state
+* PASS - load page without URL options restores prior state
+* PASS - shared view URL cleared when shared view control cleared
+* PARTIAL - parity with portfolio items page
+   * PASS - select pi
+   * PASS - advanced filters
+   * PASS - column picker
+   * PASS - shared views
+   * FAIL - default views per PI type
+   * FAIL - import
+   * FAIL - print
+* PASS - load URL of shared view that was removed
+* PASS - Chrome OSX
+* PASS - Safari OSX
+* PASS - Firefox OSX
+* Edge - Not tested
+
 ### First Load
 
 If you've just downloaded this from github and you want to do development,
