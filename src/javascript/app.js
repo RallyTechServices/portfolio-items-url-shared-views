@@ -146,6 +146,7 @@ Ext.define("custom-grid-with-deep-export", {
                 scope: this,
                 viewchange: this.viewChange,
             },
+            sharedViewAdditionalCmps: [this.piTypePlugin],
             plugins: [
                 'rallygridboardaddnew',
                 {
@@ -186,7 +187,9 @@ Ext.define("custom-grid-with-deep-export", {
                         enableUrlSharing: this.isFullPageApp !== false,
                         stateful: true,
                         stateId: this.getModelScopedStateId(currentModelName, 'views'),
-                        stateEvents: ['select', 'beforedestroy']
+                        stateEvents: ['select', 'beforedestroy'],
+                        additionalFilters: [this.piTypePlugin.getCurrentViewFilter()],
+                        suppressViewNotFoundNotification: true
                     },
                 }
             ],

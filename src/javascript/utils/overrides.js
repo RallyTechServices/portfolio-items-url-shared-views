@@ -31,7 +31,6 @@ Ext.override(Rally.ui.gridboard.SharedViewComboBox, {
 
 Ext.override(Rally.ui.gridboard.plugin.GridBoardFieldPicker, {
     gridFieldBlackList: [
-        'Actuals',
         'Changesets',
         'Children',
         // 'Description',

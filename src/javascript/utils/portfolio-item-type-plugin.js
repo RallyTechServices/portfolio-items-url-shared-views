@@ -66,5 +66,13 @@ Ext.define('TS.PortfolioItemTypePlugin', {
 
     setCurrentView: function(view) {
         this.setValue(view.tsportfolioitemtype);
+    },
+
+    getCurrentViewFilter: function() {
+        return {
+            property: 'value',
+            operator: 'contains',
+            value: "\"tsportfolioitemtype\":\"" + this.getValue() + "\""
+        }
     }
 });
