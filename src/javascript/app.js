@@ -50,7 +50,7 @@ Ext.define("custom-grid-with-deep-export", {
     launch: function() {
         this.piTypePlugin = Ext.create('TS.PortfolioItemTypePlugin', {
             stateful: true,
-            stateId: this.getModelScopedStateId('pitype'),
+            stateId: this.getContext().getScopedStateId('pitype'), // No model yet, can't use model scoped id
             fieldLabel: 'Portfolio Items',
             labelWidth: 105,
             listeners: {
@@ -138,6 +138,8 @@ Ext.define("custom-grid-with-deep-export", {
         var currentModelName = this.modelNames[0];
         this.gridboard = gridArea.add({
             xtype: 'rallygridboard',
+            //stateful: true,
+            //stateId: this.getModelScopedStateId(currentModelName, 'gridboard'),
             context: context,
             modelNames: this.modelNames,
             toggleState: 'grid',
@@ -146,6 +148,7 @@ Ext.define("custom-grid-with-deep-export", {
                 scope: this,
                 viewchange: this.viewChange,
             },
+            sharedViewAdditionalCmps: [this.piTypePlugin],
             plugins: [
                 'rallygridboardaddnew',
                 {
@@ -185,8 +188,10 @@ Ext.define("custom-grid-with-deep-export", {
                     sharedViewConfig: {
                         enableUrlSharing: this.isFullPageApp !== false,
                         stateful: true,
-                        stateId: this.getModelScopedStateId(currentModelName, 'views'),
-                        stateEvents: ['select', 'beforedestroy']
+                        stateId: this.getContext().getScopedStateId('views'), //this.getModelScopedStateId(currentModelName, 'views'),
+                        stateEvents: ['select', 'beforedestroy'],
+                        additionalFilters: [this.piTypePlugin.getCurrentViewFilter()],
+                        suppressViewNotFoundNotification: true
                     },
                 }
             ],
