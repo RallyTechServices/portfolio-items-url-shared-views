@@ -52,7 +52,8 @@ Ext.define("custom-grid-with-deep-export", {
             stateful: true,
             stateId: this.getContext().getScopedStateId('pitype'), // No model yet, can't use model scoped id
             fieldLabel: 'Portfolio Items',
-            labelWidth: 105,
+            labelCls: 'tstitle',
+            labelWidth: 130,
             listeners: {
                 scope: this,
                 ready: function(combobox) {

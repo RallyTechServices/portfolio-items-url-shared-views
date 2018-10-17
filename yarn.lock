@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@agile-central-technical-services/utils-ancestor-pi-inline-filter/-/utils-ancestor-pi-inline-filter-1.0.8.tgz#ff3c9f9e6070c0183083ee81940c4bf214358026"
   integrity sha512-Vymr+sc4EfbHHAlYR6pDU7BOFYPZhYeUXuEol/lns04Wur90WhcOqNX24kfaSAHGOYglz8CJpJRrl9ffOcUezw==
 
-"@agile-central-technical-services/utils-shared-views@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@agile-central-technical-services/utils-shared-views/-/utils-shared-views-1.0.0.tgz#de98f885ab2f1e44129c34b6c020431333de271e"
-  integrity sha1-3pj4hasvHkQSnDS2wCBDEzPeJx4=
+"@agile-central-technical-services/utils-shared-views@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@agile-central-technical-services/utils-shared-views/-/utils-shared-views-1.0.2.tgz#b03b0919e36054f8d5d1dc311ba864e30b06d120"
+  integrity sha512-HNmdnembzE49M0TyPoeSLp7fmv8yvRI+nKtd77/TemRRK6/cXT5jk9jRIdolYmz/U0hYG1Voh1+UteRn7OoqtQ==
 
 "@sinonjs/commons@^1.0.2":
   version "1.0.2"
