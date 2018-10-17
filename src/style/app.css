@@ -1,8 +1,8 @@
-.app {
-}
+.app {}
+
 .tsinfolink {
-    position:absolute;
-    right:0px;
+    position: absolute;
+    right: 0px;
     width: 14px;
     height: 14px;
     border-radius: 7px;
@@ -14,4 +14,16 @@
     margin-top: 25px;
     margin-right: 5px;
     cursor: pointer;
+}
+
+.tstitle {
+    display: inline-block;
+    vertical-align: middle;
+    vertical-align: auto;
+    zoom: 1;
+    display: inline;
+    font-size: 1.2rem;
+    color: #676767;
+    font-family: ProximaNova, helvetica, sans-serif;
+    margin: 0 1rem 0 0;
 }

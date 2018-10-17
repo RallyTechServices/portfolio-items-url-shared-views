@@ -1,3 +1,32 @@
+Ext.override(Rally.ui.renderer.GridEditorFactory, {
+    editorRenderers: {
+        PreliminaryEstimate: function(field) {
+            return {
+                xtype: 'rallyrecordcontexteditor',
+                field: {
+                    xtype: 'rallycombobox',
+                    allowNoEntry: !field.required,
+                    editable: false,
+                    name: field.name,
+                    storeConfig: {
+                        autoLoad: true,
+                        model: field.name,
+                        remoteFilter: true,
+                        sorters: [{
+                            property: "Value"
+                        }],
+                        listeners: {
+                            load: function() {
+                                return;
+                            }
+                        }
+                    }
+                }
+            };
+        },
+    }
+});
+
 Ext.override(Rally.nav.Manager, {
     // Override to not automatically remove other parameters
     applyParameters: function(params, triggerNavStateChange, paramsToRemove) {
@@ -18,48 +47,6 @@ Ext.override(Rally.nav.Manager, {
         Rally.environment.getMessageBus().publish(Rally.nav.Message.applyParameters, currentParams, triggerNavStateChange, paramsToRemove);
     }
 });
-
-Ext.override(Rally.ui.gridboard.SharedViewComboBox, {
-    getSharedViewParam: function() {
-        // Must override `window.location` with `parent.location`
-        var hash = parent.location.hash,
-            matches = hash.match(/sharedViewId=(\d+)/);
-
-        return matches && matches[1];
-    },
-
-    /**
-     * Override to avoid a race condition when restoring columns.
-     * _ensureLatestView is called out of the constructor after initComponent before store.load(), but store.load() is called immediately after
-     * by the parent combobox. The asynchronous store.model.load() here will race with store.load() invoked by the parent. If
-     * the store.load returns first, this function would miss the load event and never apply the latest view columns.
-     * 
-     * Ensure we don't miss the store.load() event by registering an event handler now (before the parent calls store.load()) and
-     * that handler can act on the store.model.load() promise when it resolves. This allows both loads to proceed in parallel without
-     * possibly missing the load event.
-     */
-    _ensureLatestView: function(state) {
-        if (state.objectId && state.versionId) {
-            var modelLoadDeferred = Ext.create('Deft.Deferred');
-            this.store.model.load(state.objectId, {
-                fetch: ['VersionId', 'Value'],
-                success: function(record) {
-                    modelLoadDeferred.resolve(record);
-                }
-            });
-            this.store.on('load', function() {
-                modelLoadDeferred.promise.then({
-                    success: function(record) {
-                        if (record && record.get('VersionId') !== state.versionId) {
-                            this._applyView(this._decodeValue(record));
-                        }
-                    },
-                    scope: this
-                })
-            }, this, { single: true });
-        }
-    },
-})
 
 Ext.override(Rally.ui.gridboard.plugin.GridBoardFieldPicker, {
     gridFieldBlackList: [
