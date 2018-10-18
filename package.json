@@ -1,6 +1,6 @@
 {
   "name": "portfolio-item-url-shared-views",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
     "debug": "grunt debug",
     "debug:watch": "nodemon --exec grunt debug",
@@ -9,7 +9,7 @@
     "deploy-debugsdk:watch": "nodemon --exec grunt deploy-debugsdk"
   },
   "dependencies": {
-    "@agile-central-technical-services/utils-ancestor-pi-inline-filter": "^1.0.8",
+    "@agile-central-technical-services/utils-ancestor-pi-inline-filter": "^1.0.10",
     "@agile-central-technical-services/utils-shared-views": "^1.0.2"
   },
   "devDependencies": {
