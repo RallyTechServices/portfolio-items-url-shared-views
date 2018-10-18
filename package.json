@@ -1,6 +1,6 @@
 {
   "name": "portfolio-item-url-shared-views",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "scripts": {
     "debug": "grunt debug",
     "debug:watch": "nodemon --exec grunt debug",
