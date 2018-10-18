@@ -31,6 +31,8 @@ to allow the user to respect or ignore the global project setting. This is
 useful when Portfolio Items associated with a specific Milestone are not
 constrained to a specific subset of the Project Hierarchy tree.
 
+Additionally, items can be filtered by an ancestor portfolio item. (e.g. filter Features that are ultimately children of the higher level Theme).
+
 ### Caveats
 * If an item has a parent that is out of scope, then that item's relationship will not be seen.
 
