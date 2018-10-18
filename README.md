@@ -1,4 +1,9 @@
-# Portfolio Item Grid with deep export
+# Portfolio Item URL Shared Views
+
+Very similar to [custom-grid-with-deep-export](https://github.com/RallyTechServices/custom-grid-with-deep-export) but with a
+Portfolio Item Type picker so it acts like the default Portfolio Items page, except that it updates the page URL as the selected
+Portfolio Item Type and Saved View are modified. Copying the URL and loading it will load this app set to the selected Portfolio
+Item Type and Saved View.
 
 ![](screenshot.png)
 
