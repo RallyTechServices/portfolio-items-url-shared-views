@@ -34,8 +34,8 @@ Ext.define("custom-grid-with-deep-export", {
     },
 
     piTypesOnly: true,
-
-    modelNames: [],
+    selectedPiType: undefined,
+    selectedPiTypePath: undefined,
 
     disallowedAddNewTypes: ['user', 'userprofile', 'useriterationcapacity', 'testcaseresult', 'task', 'scmrepository', 'project', 'changeset', 'change', 'builddefinition', 'build', 'program'],
     orderedAllowedPageSizes: [10, 25, 50, 100, 200],
@@ -58,7 +58,7 @@ Ext.define("custom-grid-with-deep-export", {
                 scope: this,
                 ready: function(combobox) {
                     // Pi picker has initial value, save it for 
-                    var selectedPiType = combobox.getRecord();
+                    this.selectedPiType = combobox.getRecord();
 
                     // Get the list of portfolio item types from the pi picker
                     this.portfolioItemTypes = _.sortBy(combobox.getStore().getRecords(), function(type) {
@@ -67,9 +67,10 @@ Ext.define("custom-grid-with-deep-export", {
 
                     // Now that ready (and initial updates have completed), listen for future changes
                     combobox.on('select', function(combobox, records) {
-                        var newModel = records[0].get('TypePath');
-                        if (newModel != this.modelNames[0]) {
-                            this.modelNames = [newModel];
+                        this.selectedPiType = records[0];
+                        var newModel = this.selectedPiType.get('TypePath');
+                        if (newModel != this.selectedPiTypePath) {
+                            this.selectedPiTypePath = newModel;
                             // Update the grid with the new PI type
                             this.viewChange();
                         }
@@ -80,8 +81,8 @@ Ext.define("custom-grid-with-deep-export", {
                     controlArea.add(this.piTypePlugin);
 
                     // Add the data grid if we have a pi type selected
-                    if (selectedPiType) {
-                        this.modelNames = [selectedPiType.get('TypePath')];
+                    if (this.selectedPiType) {
+                        this.selectedPiTypePath = this.selectedPiType.get('TypePath');
                         this.viewChange();
                     }
                 }
@@ -100,8 +101,7 @@ Ext.define("custom-grid-with-deep-export", {
     },
 
     _buildStore: function() {
-        //this.modelNames = [this.getSetting('type')];
-        this.logger.log('_buildStore', this.modelNames);
+        this.logger.log('_buildStore', this.selectedPiTypePath);
         var fetch = ['FormattedID', 'Name'];
         var dataContext = this.getContext().getDataContext();
         if (this.searchAllProjects()) {
@@ -109,7 +109,7 @@ Ext.define("custom-grid-with-deep-export", {
         }
 
         Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
-            models: this.modelNames,
+            models: [this.selectedPiTypePath],
             enableHierarchy: true,
             remoteSort: true,
             fetch: fetch,
@@ -136,13 +136,10 @@ Ext.define("custom-grid-with-deep-export", {
             dataContext.project = null;
         }
         var summaryRowFeature = Ext.create('Rally.ui.grid.feature.SummaryRow');
-        var currentModelName = this.modelNames[0];
         this.gridboard = gridArea.add({
             xtype: 'rallygridboard',
-            //stateful: true,
-            //stateId: this.getModelScopedStateId(currentModelName, 'gridboard'),
             context: context,
-            modelNames: this.modelNames,
+            modelNames: [this.selectedPiTypePath],
             toggleState: 'grid',
             height: gridArea.getHeight(),
             listeners: {
@@ -156,12 +153,12 @@ Ext.define("custom-grid-with-deep-export", {
                     ptype: 'rallygridboardinlinefiltercontrol',
                     inlineFilterButtonConfig: {
                         stateful: true,
-                        stateId: this.getModelScopedStateId(currentModelName, 'filters'),
-                        modelNames: this.modelNames,
+                        stateId: this.getModelScopedStateId(this.selectedPiTypePath, 'filters'),
+                        modelNames: [this.selectedPiTypePath],
                         inlineFilterPanelConfig: {
                             quickFilterPanelConfig: {
                                 portfolioItemTypes: this.portfolioItemTypes,
-                                modelName: currentModelName,
+                                modelName: this.selectedPiTypePath,
                                 whiteListFields: [
                                     'Tags',
                                     'Milestones'
@@ -173,9 +170,9 @@ Ext.define("custom-grid-with-deep-export", {
                 {
                     ptype: 'rallygridboardfieldpicker',
                     headerPosition: 'left',
-                    modelNames: this.modelNames,
+                    modelNames: [this.selectedPiTypePath],
                     stateful: true,
-                    stateId: this.getModelScopedStateId(currentModelName, 'fields')
+                    stateId: this.getModelScopedStateId(this.selectedPiTypePath, 'fields')
                 },
                 {
                     ptype: 'rallygridboardactionsmenu',
@@ -189,10 +186,18 @@ Ext.define("custom-grid-with-deep-export", {
                     sharedViewConfig: {
                         enableUrlSharing: this.isFullPageApp !== false,
                         stateful: true,
-                        stateId: this.getContext().getScopedStateId('views'), //this.getModelScopedStateId(currentModelName, 'views'),
+                        stateId: this.getContext().getScopedStateId('views'),
                         stateEvents: ['select', 'beforedestroy'],
                         additionalFilters: [this.piTypePlugin.getCurrentViewFilter()],
-                        suppressViewNotFoundNotification: true
+                        suppressViewNotFoundNotification: true,
+                        emptyText: 'Select or Add Saved View...',
+                        defaultSelectionPosition: null,
+                        defaultViews: _.map(this._getDefaultViews(this.selectedPiTypePath), function(view) {
+                            Ext.apply(view, {
+                                Value: Ext.JSON.encode(view.Value, true)
+                            });
+                            return view;
+                        }, this),
                     },
                 }
             ],
@@ -229,6 +234,30 @@ Ext.define("custom-grid-with-deep-export", {
         });
     },
 
+    _getDefaultViews: function(modelName) {
+        return [{
+            Name: this.selectedPiType.get('Name') + ' Default View',
+            identifier: this.selectedPiType.get('Ordinal') + 1, // Doesn't work with value 0
+            Value: {
+                toggleState: 'grid',
+                columns: _.map(this._getDefaultFields(modelName), function(columnName) {
+                    return {
+                        dataIndex: columnName
+                    }
+                })
+            }
+        }];
+    },
+
+    _getDefaultFields: function(modelName) {
+        var result = ['Name', 'State', 'PercentDoneByStoryCount', 'PlannedStartDate', 'PlannedEndDate', 'Project']
+        // Release only applies to lowest Pi level
+        if (modelName == this.portfolioItemTypes[0].get('TypePath')) {
+            result.push('Release');
+        }
+        return result;
+    },
+
     viewChange: function() {
         this._buildStore();
     },
@@ -239,8 +268,8 @@ Ext.define("custom-grid-with-deep-export", {
 
     _getExportMenuItems: function() {
         var result = [];
-        this.logger.log('_getExportMenuItems', this.modelNames[0]);
-        var currentModel = this.modelNames[0].toLowerCase();
+        this.logger.log('_getExportMenuItems', this.selectedPiTypePath);
+        var currentModel = this.selectedPiTypePath.toLowerCase();
         if (currentModel === 'hierarchicalrequirement') {
             result = [{
                 text: 'Export User Stories...',
@@ -399,7 +428,7 @@ Ext.define("custom-grid-with-deep-export", {
         var columns = this._getExportColumns(),
             fetch = this._getExportFetch(),
             filters = this._getExportFilters(),
-            modelName = this.modelNames[0],
+            modelName = this.selectedPiTypePath,
             childModels = args.childModels,
             sorters = this._getExportSorters();
 
