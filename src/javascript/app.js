@@ -318,6 +318,26 @@ Ext.define("custom-grid-with-deep-export", {
                 handler: this._export,
                 scope: this,
                 childModels: childModels.concat(['hierarchicalrequirement', 'task', 'defect', 'testcase'])
+            }, {
+                text: 'Import ' + currentModel + '...',
+                handler: function() {
+                    Ext.widget({
+                        xtype: 'rallycsvimportdialog',
+                        type: this.selectedPiTypePath,
+                        title: 'Import ' + currentModel
+                    });
+                },
+
+            }, {
+                text: 'Print',
+                handler: function() {
+                    Ext.create('Rally.ui.grid.TreeGridPrintDialog', {
+                        grid: this.gridboard,
+                        treeGridPrinterConfig: {
+                            largeHeaderText: 'Print Me'
+                        }
+                    });
+                },
             }];
         }
         else if (currentModel == 'defect') {
