@@ -186,6 +186,8 @@ Ext.define("custom-grid-with-deep-export", {
                     sharedViewConfig: {
                         enableUrlSharing: this.isFullPageApp !== false,
                         stateful: true,
+                        pageSize: 200,
+                        limit: Infinity,
                         stateId: this.getContext().getScopedStateId('views'),
                         stateEvents: ['select', 'beforedestroy'],
                         additionalFilters: [this.piTypePlugin.getCurrentViewFilter()],
