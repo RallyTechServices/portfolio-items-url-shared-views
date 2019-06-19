@@ -23,6 +23,25 @@ Rally.ui.renderer.GridEditorFactory.editorRenderers['PreliminaryEstimate'] = fun
     };
 };
 
+Ext.override(Rally.data.wsapi.Field, {
+    getAllowedValueStore: function(storeConfig) {
+        var allowedValues = this._getAllowedValues();
+        if (allowedValues) {
+            if(!this._allowedValueStore) {
+                this._allowedValueStore = Ext.create('Rally.data.wsapi.collection.Store', _.merge({
+                    cacheResults: true,
+                    initialCount: allowedValues.length || allowedValues.Count,
+                    model: Ext.identityFn('AllowedAttributeValue'),
+                    proxy: Rally.data.wsapi.ModelFactory.buildProxy(this.getAllowedValuesRef(), this.name),
+                    pageSize: 2000
+                }, storeConfig));
+            }
+            return this._allowedValueStore;
+        }
+        return null;
+    }
+});
+
 Ext.override(Rally.nav.Manager, {
     // Override to not automatically remove other parameters
     applyParameters: function(params, triggerNavStateChange, paramsToRemove) {
