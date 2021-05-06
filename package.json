@@ -23,7 +23,7 @@
     "nodemon": "^1.14.11",
     "rally-sdk2-test-utils": "0.1.2",
     "request": "2.67",
-    "underscore": "1.8.3",
+    "underscore": "1.12.1",
     "username": "2.1.0"
   },
   "nodemonConfig": {
